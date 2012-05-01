@@ -1,5 +1,5 @@
 Name:           tiger
-Version:        3.2.1
+Version:        3.2.3
 Release:        13%{?dist}
 Epoch:          1
 Summary:        Security auditing on UNIX systems
@@ -7,8 +7,8 @@ Summary:        Security auditing on UNIX systems
 Group:          Applications/System
 License:        GPL+
 URL:            http://www.nongnu.org/tiger/
-Source0:        http://savannah.nongnu.org/download/tiger/tiger-3.2.1.tar.gz
-Source1:        http://savannah.nongnu.org/download/tiger/tiger-3.2.1.tar.gz.sig
+Source0:        http://git.savannah.gnu.org/cgit/tiger.git/snapshot/tiger-version_3_2_3.tar.gz
+#Source1:        http://savannah.nongnu.org/download/tiger/tiger-3.2.1.tar.gz.sig
 Source2:        tiger.cron
 Source3:        tiger.ignore
 Source4:        tiger.ignore.server

@@ -7,7 +7,7 @@
 Summary:  Apache HTTP Server
 Name:     httpd
 Version:  2.2.17
-Release:  2%{?dist}
+Release:  3%{?dist}
 Epoch:    1
 URL:      http://httpd.apache.org/
 Source0:  http://archive.apache.org/dist/httpd/httpd-%{version}.tar.gz
@@ -19,6 +19,7 @@ Source10: httpd.conf
 Source11: ssl.conf
 Source12: welcome.conf
 Source13: manual.conf
+Source14: itk.conf
 # Documentation
 Source33: README.confd
 # build/scripts patches
@@ -47,7 +48,6 @@ Patch69:  httpd-2.2.0-authnoprov.patch
 Patch70:  httpd-2.2.15-ssloidval.patch
 Patch71:  httpd-2.2.15-davputfail.patch
 Patch72:  httpd-2.2.15-expectnoka.patch
-# Security fixes
 License: ASL 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -249,7 +249,7 @@ done
 
 # install conf file/directory
 mkdir $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d
-install -m 644 $RPM_SOURCE_DIR/README.confd \
+install -m 644 %{SOURCE33} \
     $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.d/README
 for f in ssl.conf welcome.conf manual.conf; do
   install -m 644 -p $RPM_SOURCE_DIR/$f \
@@ -257,11 +257,13 @@ for f in ssl.conf welcome.conf manual.conf; do
 done
 
 rm $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf/*.conf
-install -m 644 -p $RPM_SOURCE_DIR/httpd.conf \
-   $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf/httpd.conf
+for f in httpd.conf itk.conf; do
+  install -m 644 -p $RPM_SOURCE_DIR/$f \
+        $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf/$f
+done
 
 mkdir $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-install -m 644 -p $RPM_SOURCE_DIR/httpd.sysconf \
+install -m 644 -p %{SOURCE5} \
    $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/httpd
 
 # for holding mod_dav lock database
@@ -317,7 +319,7 @@ ln -s ../..%{_libdir}/httpd/modules $RPM_BUILD_ROOT/etc/httpd/modules
 
 # install SYSV init stuff
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-install -m755 $RPM_SOURCE_DIR/httpd.init \
+install -m755 %{SOURCE4} \
        $RPM_BUILD_ROOT/etc/rc.d/init.d/httpd
 
 # install log rotation stuff
@@ -440,6 +442,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/httpd/run
 %dir %{_sysconfdir}/httpd/conf
 %config %{_sysconfdir}/httpd/conf/httpd.conf
+%config %{_sysconfdir}/httpd/conf/itk.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/welcome.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/magic
 
@@ -511,6 +514,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/build/*.sh
 
 %changelog
+* Sun Apr 29 2012 DeoGracia <deogracia@free.fr> - 1:2.2.17-3.el6.centos
+- export itk conf to /etc/httpd/conf/itk.conf
+- fix to /tmp php session's path when using itk
+
 * Sun Dec 11 2011 DeoGracia <deogracia@free.fr> - 1:2.2.17-2.el6.centos
 - fix require for subpackage (add epoch )
 
